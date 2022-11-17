@@ -45,6 +45,3 @@ readBLOB(1, "/Users/dave/Desktop/python_stuff/query_output/photo1.png",
 
 readBLOB(2, "/Users/dave/Desktop/python_stuff/query_output/photo2.png",
         "/Users/dave/Desktop/python_stuff/query_output/data2.txt")
-
-#readBLOB(2, "D:\Python\Articles\my_SQL\query_output\scott_photo.png",
- #        "D:\Python\Articles\my_SQL\query_output\scott_bioData.txt")
