@@ -1,6 +1,8 @@
-import { NgModule } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TextComponent } from './text/text.component';
+import { MainPageComponent } from './main-page/main-page.component';
+import { FileAddComponent } from './file-add/file-add.component';
 
 const routes: Routes = [
   {
@@ -8,8 +10,16 @@ const routes: Routes = [
     component: TextComponent
   },
   {
+    path: 'main-page',
+    component: TextComponent
+  },
+  {
+    path: 'file-add',
+    component: FileAddComponent
+  },
+  {
     path: '',
-    redirectTo: 'text',
+    redirectTo: 'file-add',
     pathMatch: 'full'
   }
 ];
