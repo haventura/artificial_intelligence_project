@@ -13,7 +13,7 @@ export class RestService {
   public uploadfile(file: File) {
     let formParams = new FormData();
     formParams.append('file', file)
-    return this.http.post('http://localhost:3000/uploadFile', formParams)
+    return this.http.post('http://localhost:8000/uploadfile/', formParams)
   }
 
 }

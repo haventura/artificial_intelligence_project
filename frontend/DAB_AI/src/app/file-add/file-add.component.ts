@@ -23,8 +23,10 @@ export class FileAddComponent implements OnInit {
   upload() {
     if (this.file) {
       this.rest.uploadfile(this.file).subscribe(resp => {
-        alert("Uploaded")
+        console.log("file uploaded")
+        console.log(resp)
       })
+      alert("Uploaded")
     } else {
       alert("Please select a file first")
     }
