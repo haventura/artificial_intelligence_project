@@ -23,3 +23,15 @@ run server with python -m uvicorn main:app --reload
             "content" "Un autre texte"
         }
 }
+
+https://github.com/Curt-Park/handwritten_digit_recognition
+
+"Pixel values are 0 to 255. 0 means background (white), 255 means foreground (black)."
+
+https://nanonets.com/blog/handwritten-character-recognition/
+
+https://github.com/githubharald/SimpleHTR
+
+https://fki.tic.heia-fr.ch/databases/iam-handwriting-database
+https://cvl.tuwien.ac.at/research/cvl-databases/an-off-line-database-for-writer-retrieval-writer-identification-and-word-spotting/
+https://paperswithcode.com/dataset/rimes

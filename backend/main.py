@@ -1,6 +1,7 @@
 from typing import Union
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, File, UploadFile
+import time
 
 app = FastAPI()
 
@@ -20,17 +21,17 @@ app.add_middleware(
 def read_root():
     return {"Hello": "World"}
 
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
-
+@app.get("/images/{image_id}")
+def read_image(image_id: int):
+    return {"image_id": image_id}
 
 @app.post("/uploadfile/")
 async def create_file(file: bytes = File()):
-    
+    ts = time.strftime("%Y%m%d-%H%M%S")
+    f = open(f'{ts}.jpg', 'wb')
+    f.write(file)
+    f.close()
     return {"file_size": len(file)}
-
 
 # @app.post("/uploadfile/")
 # async def create_upload_file(file: UploadFile):
