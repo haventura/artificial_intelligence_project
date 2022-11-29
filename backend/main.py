@@ -2,6 +2,12 @@ from typing import Union
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, File, UploadFile
 import time
+import subprocess
+import json
+
+class FilePaths:
+    """Filenames and paths to data."""
+    fn_output = 'SimpleHTR/output/output.json'
 
 app = FastAPI()
 
@@ -28,10 +34,14 @@ def read_image(image_id: int):
 @app.post("/uploadfile/")
 async def create_file(file: bytes = File()):
     ts = time.strftime("%Y%m%d-%H%M%S")
-    f = open(f'{ts}.jpg', 'wb')
+    filename = f'{ts}.png'
+    f = open(f'SimpleHTR/data/{filename}', 'wb')
     f.write(file)
     f.close()
-    return {"file_size": len(file)}
+    subprocess.run(['python', 'SimpleHTR/src/main.py', '--img_file', f'SimpleHTR/data/{filename}'])
+    with open(FilePaths.fn_output, 'r') as f:
+        return json.load(f)
+    # return {"file_size": len(file)}
 
 # @app.post("/uploadfile/")
 # async def create_upload_file(file: UploadFile):
