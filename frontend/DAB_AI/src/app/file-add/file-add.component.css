@@ -1,3 +1,7 @@
 .file-input {
     display: none;
   }
+  .box_data {
+    border: 2px solid rgb(111, 115, 104);
+    width: 350px;
+}
