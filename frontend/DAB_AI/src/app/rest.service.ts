@@ -3,6 +3,21 @@ import { HttpClient } from '@angular/common/http';
 import { Observable,throwError,map } from 'rxjs';
 
 
+const endpoint = "http://localhost:8000/";
+
+//Interface Image
+export interface Image{
+  img_name: string;
+  img_url: string;
+  text_data: TextData[];
+}
+
+//Interface TextData
+export interface TextData{
+  color: string;
+  content: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RestService } from '../rest.service';
+import { RestService,Image,TextData } from '../rest.service';
 
 @Component({
   selector: 'app-file-add',
@@ -10,14 +10,24 @@ import { RestService } from '../rest.service';
 export class FileAddComponent implements OnInit {
 
   file: File | null = null;
+  image = {} as Image;
+  color = "#f00fff";
+  url = "";
 
   constructor(public rest: RestService,private route: ActivatedRoute ,private router: Router) { }
 
   ngOnInit(): void {
   }
+
   onFilechange(event: any) {
     console.log(event.target.files[0])
     this.file = event.target.files[0]
+    //display img
+    var reader = new FileReader();
+    reader.readAsDataURL(event.target.files[0]);
+    reader.onload = (event:any)=>{
+      this.url=event.target.result;
+    }
   }
   
   upload() {
@@ -25,12 +35,15 @@ export class FileAddComponent implements OnInit {
       this.rest.uploadfile(this.file).subscribe(resp => {
         console.log("file uploaded")
         console.log(resp)
+
+        
       })
       alert("Uploaded")
     } else {
       alert("Please select a file first")
     }
   }
+  
 
 
 

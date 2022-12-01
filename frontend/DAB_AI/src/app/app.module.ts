@@ -11,6 +11,7 @@ import { TextComponent } from './text/text.component';
 import { FilesComponent } from './files/files.component';
 import { FileAddComponent } from './file-add/file-add.component';
 import { MainPageComponent } from './main-page/main-page.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { MainPageComponent } from './main-page/main-page.component';
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
-    RouterModule.forRoot([])
+    RouterModule.forRoot([]),
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
