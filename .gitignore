@@ -1,4 +1,4 @@
 *.png
 *.jpg
 *.pyc 
-/backend/output/*
+/backend/SimpleHTR/output/*
