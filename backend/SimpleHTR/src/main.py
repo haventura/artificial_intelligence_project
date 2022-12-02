@@ -1,6 +1,7 @@
 import argparse
 import json
 from typing import Tuple, List
+import dataclasses
 
 import cv2
 import editdistance
@@ -16,6 +17,17 @@ class FilePaths:
     fn_summary = 'SimpleHTR/model/summary.json'
     fn_corpus = 'SimpleHTR/data/corpus.txt'
     fn_output = 'SimpleHTR/output/output.json'
+
+@dataclasses.dataclass
+class TextData:
+    color: str
+    content: str
+
+@dataclasses.dataclass
+class ResponseData:
+    img_name: str
+    img_url: str
+    text_data: list[TextData]
 
 def get_img_height() -> int:
     """Fixed height for NN."""
@@ -131,7 +143,11 @@ def infer(model: Model, fn_img: Path) -> None:
     batch = Batch([img], None, 1)
     recognized, probability = model.infer_batch(batch, True)
     with open(FilePaths.fn_output, 'w') as f:
-        json.dump({'recognized': recognized[0], 'probability': float(probability[0])}, f)
+        text_data = [TextData("#ff00ff",recognized[0]), TextData("#ff00ff",recognized[0])]
+        response_data = ResponseData("nom de l'image", "une url", text_data)
+        
+        #json.dump({'recognized': recognized[0], 'probability': float(probability[0])}, f)
+        json.dump(dataclasses.asdict(response_data),f)
     print(f'Recognized: "{recognized[0]}"')
     print(f'Probability: {probability[0]}')
 
