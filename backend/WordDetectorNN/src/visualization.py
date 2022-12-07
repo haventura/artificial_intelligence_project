@@ -13,11 +13,18 @@ def visualize(img, aabbs):
 
     return img
 
-
-def visualize_and_plot(img, aabbs):
+def crop_image(img, aabbs, dest):
     plt.imshow(img, cmap='gray')
+    word_count = 0
     for aabb in aabbs:
-        plt.plot([aabb.xmin, aabb.xmin, aabb.xmax, aabb.xmax, aabb.xmin],
-                 [aabb.ymin, aabb.ymax, aabb.ymax, aabb.ymin, aabb.ymin])
+        word_count += 1
+        xmin = int(aabb.xmin)
+        xmax = int(aabb.xmax)
+        ymin = int(aabb.ymin)
+        ymax = int(aabb.ymax)
+        cropped_image = img[ymin:ymax,xmin:xmax ]
 
-    plt.show()
+        # https://stackoverflow.com/questions/19239381/pyplot-imsave-saves-image-correctly-but-cv2-imwrite-saved-the-same-image-as
+        cropped_image = cv2.convertScaleAbs(cropped_image, alpha=(255.0))
+        cv2.imwrite(f'{dest}/file{str(word_count)}.png', cropped_image)
+    return word_count
