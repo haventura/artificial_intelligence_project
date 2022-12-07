@@ -65,8 +65,8 @@ async def create_file(file: bytes = File()):
     os.mkdir(main_image_folder_path)
     os.mkdir(sub_images_folder_path)
 
-    filename = f'{timestamp}.png'
-    f = open(f'data/{filename}', 'wb')
+    image_name = f'{timestamp}.png'
+    f = open(f'data/{image_name}', 'wb')
     f.write(file)
     f.close()
 
