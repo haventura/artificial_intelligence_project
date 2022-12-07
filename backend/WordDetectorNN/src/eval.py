@@ -14,7 +14,7 @@ from iou import compute_dist_mat_2
 from loss import compute_loss
 from net import WordDetectorNet
 from utils import compute_scale_down
-from visualization import visualize_and_plot
+from visualization import crop_image
 
 EvaluateRes = namedtuple('EvaluateRes', 'batch_imgs,batch_aabbs,loss,metrics')
 
@@ -100,7 +100,7 @@ def main():
     args = parser.parse_args()
 
     net = WordDetectorNet()
-    net.load_state_dict(torch.load('../model/weights'))
+    net.load_state_dict(torch.load('./WordDetectorNN/model/weights'))
     net.eval()
     net.to('cuda')
 
@@ -115,7 +115,7 @@ def main():
     print(f'F1 score: {res.metrics.f1()}')
 
     for img, aabbs in zip(res.batch_imgs, res.batch_aabbs):
-        visualize_and_plot(img, aabbs)
+        crop_image(img, aabbs)
 
 
 if __name__ == '__main__':
