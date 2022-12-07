@@ -10,13 +10,17 @@ import { RestService,Image,TextData } from '../rest.service';
 export class FileAddComponent implements OnInit {
 
   file: File | null = null;
+  texts: TextData[] = [];
+  images: Image[] = [];
   image = {} as Image;
   color = "#f00fff";
   url = "";
+  test = "";
 
   constructor(public rest: RestService,private route: ActivatedRoute ,private router: Router) { }
 
   ngOnInit(): void {
+
   }
 
   onFilechange(event: any) {
@@ -32,20 +36,17 @@ export class FileAddComponent implements OnInit {
   
   upload() {
     if (this.file) {
-      this.rest.uploadfile(this.file).subscribe(resp => {
-        console.log("file uploaded")
-        console.log(resp)
-
-        
+      this.rest.uploadfile(this.file).subscribe((resp) => {
+        //Code will execute when back-end will respond
+        console.log(resp),
+        this.image = resp;
       })
-      alert("Uploaded")
+      //alert("Uploaded")
     } else {
       alert("Please select a file first")
     }
   }
   
-
-
 
 
 
