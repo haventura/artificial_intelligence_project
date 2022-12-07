@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-from aabb import AABB
+from .aabb import AABB
 
 
 class MapOrdering:

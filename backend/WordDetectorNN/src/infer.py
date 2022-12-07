@@ -3,10 +3,10 @@ import argparse
 import torch
 from path import Path
 
-from dataloader import DataLoaderImgFile
-from eval import evaluate
-from net import WordDetectorNet
-from visualization import crop_image
+from .dataloader import DataLoaderImgFile
+from .eval import evaluate
+from .net import WordDetectorNet
+from .visualization import crop_image
 
 def word_extractor( src, dest, device = 'cpu' ):
     
@@ -15,7 +15,6 @@ def word_extractor( src, dest, device = 'cpu' ):
 
     net.eval()
     net.to(device)
-
     loader = DataLoaderImgFile(Path(src), net.input_size,device)
     res = evaluate(net, loader, max_aabbs=1000)
 

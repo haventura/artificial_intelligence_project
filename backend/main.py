@@ -12,7 +12,7 @@ import os
 class FilePaths:
     """Filenames and paths to data."""
     fn_output = 'output/output.json'
-    fn_char_list = 'model/charList.txt'
+    fn_char_list = 'SimpleHTR/model/charList.txt'
 
 @dataclasses.dataclass
 class TextData:
@@ -65,8 +65,8 @@ async def create_file(file: bytes = File()):
     os.mkdir(main_image_folder_path)
     os.mkdir(sub_images_folder_path)
 
-    image_name = f'{timestamp}.png'
-    f = open(f'data/{image_name}', 'wb')
+    image_name = f'{timestamp}.jpg'
+    f = open(f'data/{timestamp}/{image_name}', 'wb')
     f.write(file)
     f.close()
 

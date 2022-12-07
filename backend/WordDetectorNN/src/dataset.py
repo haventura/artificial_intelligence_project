@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 import cv2
 from path import Path
 
-from aabb import AABB
+from .aabb import AABB
 
 
 class DatasetIAM:
