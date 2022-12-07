@@ -21,7 +21,7 @@ class TextData:
 class ResponseData:
     img_name: str
     img_url: str
-    text_data: list[TextData]
+    text_data: 'list[TextData]'
 
 app = FastAPI()
 
