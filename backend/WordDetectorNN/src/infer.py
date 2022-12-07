@@ -6,6 +6,7 @@ from path import Path
 from dataloader import DataLoaderImgFile
 from eval import evaluate
 from net import WordDetectorNet
+from visualization import crop_image
 
 def word_extractor( src, dest, device = 'cpu' ):
     
