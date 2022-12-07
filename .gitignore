@@ -2,4 +2,3 @@
 *.jpg
 *.pyc 
 *.DS_Store
-/backend/SimpleHTR/output/*
