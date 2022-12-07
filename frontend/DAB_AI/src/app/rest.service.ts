@@ -18,6 +18,7 @@ export interface TextData{
   content: string;
 }
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -25,10 +26,25 @@ export class RestService {
 
   constructor(private http: HttpClient) { }
 
+  // public uploadfile(file: File) {
+  //   let formParams = new FormData();
+  //   formParams.append('file', file)
+  //   return this.http.post('http://localhost:8000/uploadfile/', formParams)
+  // }
+  // public uploadfile(file: File) {
+  //   let formParams = new FormData();
+  //   formParams.append('file', file)
+  //   return this.http.post('http://localhost:8000/uploadfile/', formParams)
+  // }
+
+  // getImage(): Observable<Image> {
+  //   return this.http.post<Image>(endpoint + 'uploadfile/');
+  // }
+
   public uploadfile(file: File) {
     let formParams = new FormData();
     formParams.append('file', file)
-    return this.http.post('http://localhost:8000/uploadfile/', formParams)
+    return this.http.post<any>('http://localhost:8000/uploadfile/', formParams)
   }
 
 }

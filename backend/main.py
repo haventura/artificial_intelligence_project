@@ -2,12 +2,26 @@ from typing import Union
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, File, UploadFile
 import time
-import subprocess
 import json
+from SimpleHTR.src.inference import infer
+from SimpleHTR.src.model import Model
+import dataclasses
 
 class FilePaths:
     """Filenames and paths to data."""
-    fn_output = 'SimpleHTR/output/output.json'
+    fn_output = 'output/output.json'
+    fn_char_list = 'model/charList.txt'
+
+@dataclasses.dataclass
+class TextData:
+    color: str
+    content: str
+
+@dataclasses.dataclass
+class ResponseData:
+    img_name: str
+    img_url: str
+    text_data: 'list[TextData]'
 
 app = FastAPI()
 
@@ -23,6 +37,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.on_event("startup")
+async def startup_event():
+    with open(FilePaths.fn_char_list) as f:
+        global model
+        model = Model(list(f.read()))
+
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
@@ -33,16 +53,15 @@ def read_image(image_id: int):
 
 @app.post("/uploadfile/")
 async def create_file(file: bytes = File()):
-    ts = time.strftime("%Y%m%d-%H%M%S")
-    filename = f'{ts}.png'
-    f = open(f'SimpleHTR/data/{filename}', 'wb')
+    timestamp = time.strftime("%Y%m%d-%H%M%S")
+    filename = f'{timestamp}.png'
+    f = open(f'data/{filename}', 'wb')
     f.write(file)
     f.close()
-    subprocess.run(['python', 'SimpleHTR/src/main.py', '--img_file', f'SimpleHTR/data/{filename}'])
-    with open(FilePaths.fn_output, 'r') as f:
-        return json.load(f)
-    # return {"file_size": len(file)}
 
-# @app.post("/uploadfile/")
-# async def create_upload_file(file: UploadFile):
-#     return {"filename": file.filename}
+    recognized, probability = infer(model, f'data/{filename}')
+    text_data = [TextData("#ff00ff",recognized), TextData("#ff00ff",recognized)]
+    response_data = ResponseData("nom de l'image", "une url", text_data)
+    with open(FilePaths.fn_output, 'w') as f:
+        json.dump(dataclasses.asdict(response_data),f)
+    return response_data
