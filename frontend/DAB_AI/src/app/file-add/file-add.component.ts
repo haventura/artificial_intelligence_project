@@ -10,12 +10,10 @@ import { RestService,Image,TextData } from '../rest.service';
 export class FileAddComponent implements OnInit {
 
   file: File | null = null;
-  texts: TextData[] = [];
-  images: Image[] = [];
   image = {} as Image;
   color = "#f00fff";
   url = "";
-  test = "";
+  answerText = "Waiting for the introduction of the file";
 
   constructor(public rest: RestService,private route: ActivatedRoute ,private router: Router) { }
 
@@ -40,8 +38,10 @@ export class FileAddComponent implements OnInit {
         //Code will execute when back-end will respond
         console.log(resp),
         this.image = resp;
+        this.answerText = "Decode answer :";
       })
       //alert("Uploaded")
+      this.answerText = "Your file is being analysed";
     } else {
       alert("Please select a file first")
     }

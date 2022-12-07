@@ -1,0 +1,16 @@
+h1{
+    font-size: 100px;
+    padding: 50px;
+}
+.main {
+    background-color: #a9a5a5;
+    background-image: url("views/ai-configurator.jpg");
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+
+/* .bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+} */

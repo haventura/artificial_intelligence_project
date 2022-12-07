@@ -1,26 +1,33 @@
-<p>file-add works!</p>
-
-<div class="container">
-    <div class="row mt-5">
-      <div class="col-md-4">
-        <div class="mb-3">
-          <label for="formFile" class="form-label">Upload file :  </label>
-          <input (change)="this.onFilechange($event)" class="form-control" type="file" id="formFile">
-          <button (click)="this.upload()" type="button" class="btn btn-primary mt-3">Upload</button>
-        </div>
-      </div>
-    </div>
-   </div>
-
-   <div>{{image.img_name}}</div>
-   <div>{{image.img_url }}</div>
-   <ul>
-      <li *ngFor="let tD of image.text_data">
-          Color :{{tD.color}}<br>
-          Content :{{tD.content}}<br><br>
-      </li>
-    </ul>
+<div class="center">
+  <div class="body2">
     
+  
+  <div >
+    <label for="formFile" class="form-label">Upload file :  </label><br>
+    <input (change)="this.onFilechange($event)" class="form-control" type="file" id="formFile"><br><br>
+    <button (click)="this.upload()" type="button" class="button-59">Upload</button>
+    <br><br>
+    <img src="{{url}}" alt="Your uploaded image will be displayed here" />
+  </div>
+  <br><br>
+    
+  <h2>{{answerText}} </h2>
 
-<img src="{{url}}" alt="your image" />
-<img src="{{image.img_url}}" />
+  <div class="container">
+    <div class="item">
+      <h3>{{image.img_name}}</h3>
+      <img src="{{image.img_url}}"/>
+    </div>
+    <div class="item">
+      <ul>
+        <li *ngFor="let tD of image.text_data" [ngStyle]="{'border-color':tD.color}">
+            Content :{{tD.content}}<br>
+        </li><br>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+
+   
