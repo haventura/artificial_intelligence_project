@@ -3,8 +3,8 @@ h1{
     padding: 50px;
 }
 .main {
-    background-color: #a9a5a5;
-    background-image: url("views/ai-configurator.jpg");
+    /* background-color: #a9a5a5; */
+    /* background-image: url("views/ai-configurator.jpg"); */
     background-repeat: no-repeat;
     background-size:cover;
 }

@@ -8,6 +8,7 @@
     <button (click)="this.upload()" type="button" class="button-59">Upload</button>
     <br><br>
     <img src="{{url}}" alt="Your uploaded image will be displayed here" />
+    
   </div>
   <br><br>
     
@@ -19,9 +20,10 @@
       <img src="{{image.img_url}}"/>
     </div>
     <div class="item">
+      <!-- <h3 *ngif="image.text_data">Content : </h3> -->
       <ul>
         <li *ngFor="let tD of image.text_data" [ngStyle]="{'border-color':tD.color}">
-            Content :{{tD.content}}<br>
+            {{tD.content}}<br>
         </li><br>
       </ul>
     </div>
