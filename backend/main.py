@@ -61,17 +61,22 @@ async def create_file(file: bytes = File()):
     #this folder will contain the main uploaded image file and all subwords image files
     dirname = os.path.dirname(__file__)
     main_image_folder_path = os.path.join(dirname, f'data/{timestamp}')
+    input_image_folder_path = os.path.join(dirname, f'data/{timestamp}/input')#
+    output_image_folder_path = os.path.join(dirname, f'data/{timestamp}/output')#
     sub_images_folder_path = os.path.join(dirname, f'data/{timestamp}/sub_images')
+
     os.mkdir(main_image_folder_path)
+    os.mkdir(input_image_folder_path)#
+    os.mkdir(output_image_folder_path)#
     os.mkdir(sub_images_folder_path)
 
     image_name = f'{timestamp}.jpg'
-    f = open(f'data/{timestamp}/{image_name}', 'wb')
+    f = open(f'data/{timestamp}/input/{image_name}', 'wb')#
     f.write(file)
     f.close()
 
     # Call Dawid's word detector function, passing the main image file
-    word_count = word_extractor(f"data/{timestamp}", f"data/{timestamp}/sub_images")
+    word_count = word_extractor(f"data/{timestamp}/input", f"data/{timestamp}/sub_images")
     # Dawid will make sure that each subimage is labelled orderly
     # Then loop over each sub_image, transcribe them one by one and append each word to a list.
 
