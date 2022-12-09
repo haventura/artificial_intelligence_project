@@ -12,17 +12,17 @@ def visualize(img, aabbs):
 
     return img
 
-def crop_image(img, aabbs, dest):
+def crop_image(img, aabbs, dest, margin=5):
     plt.imshow(img, cmap='gray')
     word_count = 0
 
     for aabb in aabbs:
         word_count += 1
 
-        xmin = int(aabb.xmin)
-        xmax = int(aabb.xmax)
-        ymin = int(aabb.ymin)
-        ymax = int(aabb.ymax)
+        xmin = int(aabb.xmin)+margin
+        xmax = int(aabb.xmax)+margin
+        ymin = int(aabb.ymin)+margin
+        ymax = int(aabb.ymax)+margin
 
         cropped_image = img[ymin:ymax,xmin:xmax ]
 
