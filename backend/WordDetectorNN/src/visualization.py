@@ -19,9 +19,9 @@ def crop_image(img, aabbs, dest, margin=5):
     for aabb in aabbs:
         word_count += 1
 
-        xmin = int(aabb.xmin)+margin
+        xmin = int(aabb.xmin)-margin
         xmax = int(aabb.xmax)+margin
-        ymin = int(aabb.ymin)+margin
+        ymin = int(aabb.ymin)-margin
         ymax = int(aabb.ymax)+margin
 
         cropped_image = img[ymin:ymax,xmin:xmax ]
