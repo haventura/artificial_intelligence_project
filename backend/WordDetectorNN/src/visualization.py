@@ -29,5 +29,4 @@ def crop_image(img, aabbs, dest, margin=5):
         # https://stackoverflow.com/questions/19239381/pyplot-imsave-saves-image-correctly-but-cv2-imwrite-saved-the-same-image-as
         #cropped_image = cv2.convertScaleAbs(cropped_image, alpha=(255.0))
         cropped_image = cv2.normalize(cropped_image, dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-        cv2.imwrite(f'{dest}/file{str(word_count)}.png', cropped_image)
-    return word_count
+        cv2.imwrite(f'{dest}/file{word_count:03d}.png', cropped_image)
