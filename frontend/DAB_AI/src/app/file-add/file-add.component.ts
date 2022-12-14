@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RestService,Image,TextData } from '../rest.service';
+import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
 
 @Component({
   selector: 'app-file-add',
@@ -10,7 +11,10 @@ import { RestService,Image,TextData } from '../rest.service';
 export class FileAddComponent implements OnInit {
 
   file: File | null = null;
+  imageChangedEvent: any = '';
+  croppedImage: any = '';
   image = {} as Image;
+  loadedImage = {} as LoadedImage
   color = "#f00fff";
   url = "";
   answerText = "Waiting for the introduction of the file";
@@ -23,8 +27,8 @@ export class FileAddComponent implements OnInit {
 
   onFilechange(event: any) {
     console.log(event.target.files[0])
-    this.file = event.target.files[0]
     //display img
+    this.loadedImage = event.target.files[0]
     var reader = new FileReader();
     reader.readAsDataURL(event.target.files[0]);
     reader.onload = (event:any)=>{
@@ -33,7 +37,9 @@ export class FileAddComponent implements OnInit {
   }
   
   upload() {
-    if (this.file) {
+    
+    if (this.croppedImage) {
+      this.file = this.dataURLtoFile(this.croppedImage, 'filename')
       this.rest.uploadfile(this.file).subscribe((resp) => {
         //Code will execute when back-end will respond
         console.log(resp),
@@ -48,9 +54,34 @@ export class FileAddComponent implements OnInit {
   }
   
 
-
-
-
-
+  fileChangeEvent(event: any): void {
+      this.imageChangedEvent = event;
+  }
+  imageCropped(event: ImageCroppedEvent) {
+      this.croppedImage = event.base64;
+  }
+  imageLoaded(image: LoadedImage) {
+      // show cropper
+  }
+  cropperReady() {
+      // cropper ready
+  }
+  loadImageFailed() {
+      // show message
+  }
+  dataURLtoFile(dataurl: any, filename: string) {
+ 
+    var arr = dataurl.split(','),
+        mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), 
+        n = bstr.length, 
+        u8arr = new Uint8Array(n);
+        
+    while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    
+    return new File([u8arr], filename, {type:mime});
+  }
 }
 
