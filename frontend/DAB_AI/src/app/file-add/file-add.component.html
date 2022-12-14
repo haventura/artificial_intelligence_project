@@ -22,13 +22,9 @@
 
   <div class="container">
     <div class="item">
-      <h3>{{image.img_name}}</h3>
-      <img src="{{image.img_url}}"/>
-    </div>
-    <div class="item">
       <!-- <h3 *ngif="image.text_data">Content : </h3> -->
       <ul>
-        <li *ngFor="let tD of image.text_data" [ngStyle]="{'border-color':tD.color}">
+        <li *ngFor="let tD of textDataList" [ngStyle]="{'border-color':tD.color}">
             {{tD.content}}<br>
         </li><br>
       </ul>

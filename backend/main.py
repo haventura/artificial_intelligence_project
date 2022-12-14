@@ -16,14 +16,7 @@ class FilePaths:
 
 @dataclasses.dataclass
 class TextData:
-    color: str
     content: str
-
-@dataclasses.dataclass
-class ResponseData:
-    img_name: str
-    img_url: str
-    text_data: 'list[TextData]'
 
 app = FastAPI()
 
@@ -48,10 +41,6 @@ async def startup_event():
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
-
-@app.get("/images/{image_id}")
-def read_image(image_id: int):
-    return {"image_id": image_id}
 
 @app.post("/uploadfile/")
 async def create_file(file: bytes = File()):
@@ -95,8 +84,7 @@ async def create_file(file: bytes = File()):
         recognized, probability = infer(model, f'{sub_images_folder_path}/{filename}')
         text += (recognized + " ")
 
-    text_data = [TextData("#ff00ff",text), TextData("#ff00ff",text)]
-    response_data = ResponseData("nom de l'image", "une url", text_data)
+    text_data = TextData(text)
     #with open(FilePaths.fn_output, 'w') as f:
     #    json.dump(dataclasses.asdict(response_data),f)
-    return response_data
+    return text_data

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RestService,Image,TextData } from '../rest.service';
+import { RestService, TranscriptData, TextData } from '../rest.service';
 import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
+
+
 
 @Component({
   selector: 'app-file-add',
@@ -10,10 +12,13 @@ import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
 })
 export class FileAddComponent implements OnInit {
 
+  transcriptData = {} as TranscriptData;
+  textData = {} as TextData;
+  textDataList: TextData[] = [];
   file: File | null = null;
   imageChangedEvent: any = '';
   croppedImage: any = '';
-  image = {} as Image;
+  
   loadedImage = {} as LoadedImage
   color = "#f00fff";
   url = "";
@@ -42,8 +47,10 @@ export class FileAddComponent implements OnInit {
       this.file = this.dataURLtoFile(this.croppedImage, 'filename')
       this.rest.uploadfile(this.file).subscribe((resp) => {
         //Code will execute when back-end will respond
-        console.log(resp),
-        this.image = resp;
+        //console.log(resp);
+        this.transcriptData = resp
+        var textData = new TextData(this.transcriptData.content, '#ffffff');
+        this.textDataList.push(textData)
         this.answerText = "Decode answer :";
       })
       //alert("Uploaded")

@@ -5,19 +5,19 @@ import { Observable,throwError,map } from 'rxjs';
 
 const endpoint = "http://localhost:8000/";
 
-//Interface Image
-export interface Image{
-  img_name: string;
-  img_url: string;
-  text_data: TextData[];
-}
-
 //Interface TextData
-export interface TextData{
-  color: string;
+export interface TranscriptData{
   content: string;
 }
 
+export class TextData{
+  Content: string;
+  Color: string;
+  constructor(public content: string, public color: string) { 
+    this.Color = color;
+    this.Content = content;
+  }
+}
 
 @Injectable({
   providedIn: 'root'
