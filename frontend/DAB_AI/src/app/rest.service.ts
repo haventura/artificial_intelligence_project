@@ -37,9 +37,9 @@ export class RestService {
   //   return this.http.post('http://localhost:8000/uploadfile/', formParams)
   // }
 
-  // getImage(): Observable<Image> {
-  //   return this.http.post<Image>(endpoint + 'uploadfile/');
-  // }
+  getImage(): Observable<File> {
+    return this.http.get<File>('http://localhost:8000/images/20221214-091255');
+  }
 
   public uploadfile(file: File) {
     let formParams = new FormData();

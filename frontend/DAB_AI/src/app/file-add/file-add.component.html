@@ -4,13 +4,41 @@
   
   <div >
     <label for="formFile" class="form-label">Upload file :  </label><br>
-    <input (change)="this.onFilechange($event)" class="form-control" type="file" id="formFile"><br><br>
+    <input (change)="this.fileChangeEvent($event)" class="form-control" type="file" id="formFile"><br><br>
     <button (click)="this.upload()" type="button" class="button-59">Upload</button>
     <br><br>
     <img src="{{url}}" alt="Your uploaded image will be displayed here" />
+
+    <br />
+    <br />
+    <button (click)="rotateLeft()" class="button-59">Rotate left</button>
+    <button (click)="rotateRight()" class="button-59">Rotate right</button>
+    <button (click)="flipHorizontal()" class="button-59">Flip horizontal</button>
+    <button (click)="flipVertical()" class="button-59">Flip vertical</button>
+    <button (click)="zoomOut()" class="button-59">Zoom -</button> 
+    <button (click)="zoomIn()" class="button-59">Zoom +</button>
+    <br />
+    <br />
     
   </div>
   <br><br>
+  <!-- <input type="file" (change)="fileChangeEvent($event)" /> -->
+
+  <image-cropper
+      [imageChangedEvent]="imageChangedEvent"
+      [maintainAspectRatio]="false"
+      [aspectRatio]="4 / 3"
+      format="png"
+      (imageCropped)="imageCropped($event)"
+      (imageLoaded)="imageLoaded()"
+      (cropperReady)="cropperReady($event)"
+      (loadImageFailed)="loadImageFailed()"
+
+      [canvasRotation]="canvasRotation"
+      [transform]="transform"
+  ></image-cropper>
+
+  <img [src]="croppedImage" />
     
   <h2>{{answerText}} </h2>
 
