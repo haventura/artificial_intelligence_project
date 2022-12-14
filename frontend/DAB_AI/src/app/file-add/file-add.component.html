@@ -24,14 +24,11 @@
     <div class="item">
       <!-- <h3 *ngif="image.text_data">Content : </h3> -->
       <ul>
-        <li *ngFor="let tD of textDataList" [ngStyle]="{'border-color':tD.color}">
-            {{tD.content}}<br>
-        </li><br>
+        <li *ngFor="let tD of textDataList; let i = index" [ngStyle]="{'border-color':this.colorList[i%this.colorList.length]}">
+            {{tD.content}}
+        </li>
       </ul>
     </div>
   </div>
 </div>
 </div>
-
-
-   

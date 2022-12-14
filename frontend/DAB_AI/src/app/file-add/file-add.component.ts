@@ -3,8 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RestService, TranscriptData, TextData } from '../rest.service';
 import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
 
-
-
 @Component({
   selector: 'app-file-add',
   templateUrl: './file-add.component.html',
@@ -18,6 +16,7 @@ export class FileAddComponent implements OnInit {
   file: File | null = null;
   imageChangedEvent: any = '';
   croppedImage: any = '';
+  colorList = ["#ff0000","#00ff00","#0000ff","#ffff00","#ff00ff","#00ffff"]
   
   loadedImage = {} as LoadedImage
   color = "#f00fff";
@@ -49,7 +48,7 @@ export class FileAddComponent implements OnInit {
         //Code will execute when back-end will respond
         //console.log(resp);
         this.transcriptData = resp
-        var textData = new TextData(this.transcriptData.content, '#ffffff');
+        var textData = new TextData(this.transcriptData.content, '#ffff00');
         this.textDataList.push(textData)
         this.answerText = "Decode answer :";
       })
