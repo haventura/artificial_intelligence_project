@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit,ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RestService, TranscriptData, TextData } from '../rest.service';
 import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
@@ -10,10 +10,14 @@ import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
 })
 export class FileAddComponent implements OnInit {
 
+
+  @ViewChild('canvas', {static: true}) myCanvas!: ElementRef;
+  
   transcriptData = {} as TranscriptData;
   textData = {} as TextData;
   textDataList: TextData[] = [];
   file: File | null = null;
+  file_edited: File | null = null;
   imageChangedEvent: any = '';
   croppedImage: any = '';
   colorList = ["#ff0000","#00ff00","#0000ff","#ffff00","#ff00ff","#00ffff"]
@@ -21,22 +25,46 @@ export class FileAddComponent implements OnInit {
   loadedImage = {} as LoadedImage
   color = "#f00fff";
   url = "";
+  url_edited = "";
   answerText = "Waiting for the introduction of the file";
+
+  
 
   constructor(public rest: RestService,private route: ActivatedRoute ,private router: Router) { }
 
   ngOnInit(): void {
-
+    const canvas: HTMLCanvasElement = this.myCanvas.nativeElement;
+    const context = canvas.getContext("2d");
+    if(context){
+      this.drawRectangle(context);
+      // context.drawImage(this.url, 20, 20); 
+    }
   }
 
   onFilechange(event: any) {
     console.log(event.target.files[0])
     //display img
+    
     this.loadedImage = event.target.files[0]
     var reader = new FileReader();
+
+    // const canvas: HTMLCanvasElement = this.myCanvas.nativeElement;
+    // const context = canvas.getContext("2d");
+    // if(context){
+    //   var img = new Image();
+    //   img.onload = function() {
+    //     canvas.width = img.width;
+    //     canvas.height = img.height;
+    //     context.drawImage(img,0,0)
+    //   }
+      
+    // }
+    
+
     reader.readAsDataURL(event.target.files[0]);
     reader.onload = (event:any)=>{
       this.url=event.target.result;
+      
     }
   }
   
@@ -52,6 +80,8 @@ export class FileAddComponent implements OnInit {
         this.textDataList.push(textData)
         this.answerText = "Decode answer :";
       })
+      
+      
       //alert("Uploaded")
       this.answerText = "Your file is being analysed";
     } else {
@@ -64,13 +94,16 @@ export class FileAddComponent implements OnInit {
       this.imageChangedEvent = event;
   }
   imageCropped(event: ImageCroppedEvent) {
-      this.croppedImage = event.base64;
+    this.croppedImage = event.base64;
+    
   }
   imageLoaded(image: LoadedImage) {
+    
       // show cropper
   }
   cropperReady() {
       // cropper ready
+      
   }
   loadImageFailed() {
       // show message
@@ -89,5 +122,19 @@ export class FileAddComponent implements OnInit {
     
     return new File([u8arr], filename, {type:mime});
   }
+
+  drawRectangle(context: CanvasRenderingContext2D){
+    // (x, y, width, height)
+    context.strokeStyle = "green";
+    context.strokeRect(20,20,100,100);
+    context.strokeStyle = "red";
+    context.strokeRect(120,120,100,100);
+    
+    
+  }
+ 
+    
+  
+
 }
 
