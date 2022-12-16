@@ -23,4 +23,6 @@ def word_extractor( src, dest, device = 'cpu' ):
         aabbs = [aabb.scale(1 / f, 1 / f) for aabb in aabbs]
         img = loader.get_original_img(i)
         
-        crop_image(img, aabbs, dest)
+        crop_image(img, aabbs, dest, 5)
+
+        return aabbs

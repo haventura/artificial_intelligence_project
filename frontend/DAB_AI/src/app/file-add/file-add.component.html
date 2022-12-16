@@ -3,33 +3,32 @@
     
   
   <div >
-    <label for="formFile" class="form-label">Upload file :  </label><br>
-    <input (change)="this.onFilechange($event)" class="form-control" type="file" id="formFile"><br><br>
+    <input type="file" (change)="fileChangeEvent($event)" type="file"/>
+    <image-cropper
+      [imageChangedEvent]="imageChangedEvent"
+      [maintainAspectRatio]="false"
+      [aspectRatio]="4 / 3"
+      format="png"
+      (imageCropped)="imageCropped($event)"
+      (imageLoaded)="imageLoaded(loadedImage)"
+      (cropperReady)="cropperReady()"
+      (loadImageFailed)="loadImageFailed()"
+    ></image-cropper>
     <button (click)="this.upload()" type="button" class="button-59">Upload</button>
-    <br><br>
-    <img src="{{url}}" alt="Your uploaded image will be displayed here" />
-    
+    <!-- <img [src]="croppedImage" /> -->
   </div>
-  <br><br>
     
   <h2>{{answerText}} </h2>
 
   <div class="container">
     <div class="item">
-      <h3>{{image.img_name}}</h3>
-      <img src="{{image.img_url}}"/>
-    </div>
-    <div class="item">
       <!-- <h3 *ngif="image.text_data">Content : </h3> -->
       <ul>
-        <li *ngFor="let tD of image.text_data" [ngStyle]="{'border-color':tD.color}">
-            {{tD.content}}<br>
-        </li><br>
+        <li *ngFor="let tD of textDataList; let i = index" [ngStyle]="{'border-color':this.colorList[i%this.colorList.length]}">
+            {{tD.content}}
+        </li>
       </ul>
     </div>
   </div>
 </div>
 </div>
-
-
-   
