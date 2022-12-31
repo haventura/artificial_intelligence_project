@@ -1,10 +1,7 @@
 <div class="center">
-  <div class="body2">
-    
-  
-  <div >
+  <div>
     <input type="file" (change)="fileChangeEvent($event)" type="file"/>
-    <image-cropper
+    <image-cropper id="cropper"
       [imageChangedEvent]="imageChangedEvent"
       [maintainAspectRatio]="false"
       [aspectRatio]="4 / 3"
@@ -14,18 +11,14 @@
       (cropperReady)="cropperReady()"
       (loadImageFailed)="loadImageFailed()"
     ></image-cropper>
+    <canvas #canvas id="canvas" style="position: absolute; pointer-events: none; object-fit: contain;" [style.top.px]="canvas_top" [style.left.px]="canvas_left" [style.width.px]="canvas_width" [style.height.px]="canvas_height" ></canvas>
     <button (click)="this.upload()" type="button" class="button-59">Upload</button>
-    <!-- <img [src]="croppedImage" /> -->
   </div>
 
-  <canvas #canvas style="border: 1px solid" width="600" height="300"> Fallback content</canvas>
-    
-  <h2>{{answerText}} </h2>
-
+  <h2>{{answerText}}</h2>
 
   <div class="container">
     <div class="item">
-      <!-- <h3 *ngif="image.text_data">Content : </h3> -->
       <ul>
         <li *ngFor="let tD of textDataList; let i = index" [ngStyle]="{'border-color':this.colorList[i%this.colorList.length]}">
             {{tD.content}}
@@ -33,5 +26,4 @@
       </ul>
     </div>
   </div>
-</div>
 </div>
