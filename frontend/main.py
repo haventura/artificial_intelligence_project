@@ -70,8 +70,11 @@ def main():
             st.caption("Once uploaded, your file will appear here. Draw boxes on it to transcribe their content.")
             raise fragile.Break
         if uploaded_file != st.session_state["previous_upload"]:
+            if st.session_state["previous_upload"] != None:
+                preventNextTranscription()
+            st.session_state["transcript"] = []
             st.session_state["previous_upload"] = uploaded_file
-            st.session_state["history"].append(HistoryEntry(name=uploaded_file.name.split(".")[0]))
+            st.session_state["history"].append(HistoryEntry(name=uploaded_file.name.split(".")[0]))       
         background_image = Image.open(uploaded_file) 
         width, height, ratio = scaleImage(background_image,500)
         canvas_result = st_canvas(
