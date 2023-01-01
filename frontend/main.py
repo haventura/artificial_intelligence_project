@@ -1,12 +1,9 @@
 import streamlit as st
 from streamlit_drawable_canvas import st_canvas
 from PIL import Image
-import pandas as pd
-import numpy as np
 import requests
 import io
 import dataclasses
-import io
 import codecs
 
 class fragile(object):
@@ -28,8 +25,8 @@ class fragile(object):
 @dataclasses.dataclass
 class HistoryEntry:
     name: str
-    image: Image
-    transcripts: list[str]
+    image: Image = None
+    transcripts: list[str] = dataclasses.field(default_factory=list)
 
 def main():
     st.set_page_config(page_title="Text Recognition", page_icon="🤖", layout="wide")
@@ -42,18 +39,21 @@ def main():
         "#61c648",
         "#ffe86a",
         "#de4d8b",
-        "#f68d8a"
+        "#f68d8a",
+        "#615279",
+        "#a71930",
     ]
 
     if "color_index" not in st.session_state:
         st.session_state["color_index"] = 0
-    print(st.session_state["color_index"])
     if "transcript" not in st.session_state:
         st.session_state["transcript"] = []
     if "history" not in st.session_state:
         st.session_state["history"] = []
     if "prevent_transcript" not in st.session_state:
         st.session_state["prevent_transcript"] = False
+    if "previous_upload" not in st.session_state:
+        st.session_state["previous_upload"] = None
 
     with fragile(st.sidebar):
         st.header("📜 Input File")
@@ -69,6 +69,9 @@ def main():
         if uploaded_file is None:
             st.caption("Once uploaded, your file will appear here. Draw boxes on it to transcribe their content.")
             raise fragile.Break
+        if uploaded_file != st.session_state["previous_upload"]:
+            st.session_state["previous_upload"] = uploaded_file
+            st.session_state["history"].append(HistoryEntry(name=uploaded_file.name.split(".")[0]))
         background_image = Image.open(uploaded_file) 
         width, height, ratio = scaleImage(background_image,500)
         canvas_result = st_canvas(
@@ -85,33 +88,30 @@ def main():
 
     with fragile(col2):
         st.header("🖨️ Transcripts")
-        if uploaded_file is None or canvas_result.json_data is None:
+        if uploaded_file is None or canvas_result.json_data is None or len(canvas_result.json_data["objects"]) == 0:
             st.caption("Your transcription results will appear here. You'll be able to download the result as a text file.")
+            if uploaded_file and canvas_result.json_data:
+                st.session_state["color_index"] += 1
             raise fragile.Break
-        df = pd.json_normalize(canvas_result.json_data["objects"])
-        if len(df) == 0:
-            st.caption("Your transcription results will appear here. You'll be able to download the result as a text file.")
-            st.session_state["color_index"] += 1
-            raise fragile.Break
-        if not st.session_state["prevent_transcript"]:
+        if st.session_state["prevent_transcript"]:
+            st.session_state["prevent_transcript"] = False
+        else:
             crop_data = canvas_result.json_data["objects"][-1]     
             cropped_image = cropImage(background_image, crop_data, ratio)
             transcript = transcribeImage(cropped_image)
             st.session_state["transcript"].append((COLORS[st.session_state["color_index"]-2], transcript))
-        else:
-            st.session_state["prevent_transcript"] = False
+            st.session_state["history"][-1].transcripts.append(transcript)
+            if canvas_result.image_data is not None:
+                image_data = canvas_result.image_data
+                st.session_state["history"][-1].image = Image.fromarray(image_data.astype("uint8"), mode="RGBA")          
         st.session_state["color_index"] += 1
         if(st.session_state["color_index"] >= len(COLORS)):
             st.session_state["color_index"] = 0
         output_data = ""
         for value in st.session_state["transcript"]:
             st.write('<p style="color:' + value[0] + ';">' + value[1] + '</p>', unsafe_allow_html=True)    
-            output_data += (value[1] + "\n")
-        
-        st.download_button("Export", data=codecs.encode(output_data), file_name="output.txt", on_click=preventNextTranscription)
-        # if canvas_result.image_data is not None:
-        #     image_data = canvas_result.image_data
-        #     st.session_state["history"][-1].image = Image.fromarray(image_data.astype("uint8"), mode="RGBA")
+            output_data += (value[1] + "\n") 
+        st.download_button("Export", data=codecs.encode(output_data), file_name=st.session_state["history"][-1].name + ".txt", on_click=preventNextTranscription)
         
     st.write('<style>div.block-container{padding-top:1.2rem;}</style>', unsafe_allow_html=True)
     hide_footer_style = """
