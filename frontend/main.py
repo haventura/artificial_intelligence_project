@@ -149,7 +149,7 @@ def transcribeImage(image):
     img_byte_arr = io.BytesIO()
     image.save(img_byte_arr, format='PNG')
     img_byte_arr = img_byte_arr.getvalue()     
-    response = requests.post('http://localhost:8000/uploadfile/', files = {'file': img_byte_arr})
+    response = requests.post('http://backend:8000/uploadfile/', files = {'file': img_byte_arr})
     return response.json()["content"]
 
 def preventNextTranscription():

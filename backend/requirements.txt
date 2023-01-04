@@ -1,0 +1,12 @@
+path
+scikit-learn
+tensorflow
+torch
+fastapi
+pydantic
+uvicorn
+matplotlib
+numpy
+argparse
+opencv-python-headless
+lmdb

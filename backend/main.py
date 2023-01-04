@@ -2,13 +2,11 @@ from typing import Union
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, File, UploadFile
 import time
-import json
 from SimpleHTR.src.inference import infer
 from SimpleHTR.src.model import Model
 from WordDetectorNN.src.infer import word_extractor
 import dataclasses
 import os
-import scipy.spatial.distance as distance
 
 class FilePaths:
     """Filenames and paths to data."""
