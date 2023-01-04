@@ -58,7 +58,8 @@ async def create_file(file: bytes = File()):
     word_extractor(f"data/{timestamp}", f"data/{timestamp}/sub_images")
     
     text = ""
-    for filename in os.listdir(sub_images_folder_path):
+    for i in range(1,len(os.listdir(sub_images_folder_path))+1):
+        filename = f"file{i:03d}.png"
         print(filename)
         recognized, probability = infer(model, f'{sub_images_folder_path}/{filename}')
         text += (recognized + " ")

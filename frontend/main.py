@@ -5,6 +5,8 @@ import requests
 import io
 import dataclasses
 import codecs
+import magic
+import pdf2image
 
 class fragile(object):
     class Break(Exception):
@@ -54,10 +56,15 @@ def main():
         st.session_state["prevent_transcript"] = False
     if "previous_upload" not in st.session_state:
         st.session_state["previous_upload"] = None
+    if "image_width" not in st.session_state:
+        st.session_state["image_width"] = 500
 
     with fragile(st.sidebar):
         st.header("📜 Input File")
+        
         uploaded_file = st.file_uploader("Drop a file containing handwritten text here:",type=["png", "jpg", "pdf"], accept_multiple_files=False)
+        if uploaded_file is None:
+            st.session_state["image_width"] = st.slider("Image Width", 500, 1000, 500, 100)
         # st.subheader("📖 History")
         # if st.session_state["history"] == []:
         #     st.caption("Your transcripts history will appear here.")
@@ -70,16 +77,21 @@ def main():
             st.caption("Once uploaded, your file will appear here. Draw boxes on it to transcribe their content.")
             raise fragile.Break
         if uploaded_file != st.session_state["previous_upload"]:
+            st.session_state["color_index"] = 0
             if st.session_state["previous_upload"] != None:
                 preventNextTranscription()
             st.session_state["transcript"] = []
             st.session_state["previous_upload"] = uploaded_file
-            st.session_state["history"].append(HistoryEntry(name=uploaded_file.name.split(".")[0]))       
-        background_image = Image.open(uploaded_file) 
-        width, height, ratio = scaleImage(background_image,500)
+            st.session_state["history"].append(HistoryEntry(name=uploaded_file.name.split(".")[0])) 
+        uploaded_file_bytes = uploaded_file.read()
+        if magic.from_buffer(uploaded_file_bytes, mime=True) == 'application/pdf':
+            background_image = pdf2image.convert_from_bytes(uploaded_file_bytes)[0]
+        else:
+            background_image = Image.open(uploaded_file) 
+        width, height, ratio = scaleImage(background_image,st.session_state["image_width"])
         canvas_result = st_canvas(
             fill_color = "rgba(0, 0, 0, 0.0)",
-            stroke_color = COLORS[st.session_state["color_index"]-1],
+            stroke_color = COLORS[st.session_state["color_index"]],
             stroke_width = 2,
             background_image = background_image,
             width = width,
@@ -102,7 +114,7 @@ def main():
             crop_data = canvas_result.json_data["objects"][-1]     
             cropped_image = cropImage(background_image, crop_data, ratio)
             transcript = transcribeImage(cropped_image)
-            st.session_state["transcript"].append((COLORS[st.session_state["color_index"]-2], transcript))
+            st.session_state["transcript"].append((COLORS[st.session_state["color_index"]-1], transcript))
             st.session_state["history"][-1].transcripts.append(transcript)
             if canvas_result.image_data is not None:
                 image_data = canvas_result.image_data
@@ -114,7 +126,7 @@ def main():
         for value in st.session_state["transcript"]:
             st.write('<p style="color:' + value[0] + ';">' + value[1] + '</p>', unsafe_allow_html=True)    
             output_data += (value[1] + "\n") 
-        st.download_button("Export", data=codecs.encode(output_data), file_name=st.session_state["history"][-1].name + ".txt", on_click=preventNextTranscription)
+        st.download_button("Download", data=codecs.encode(output_data), file_name=st.session_state["history"][-1].name + ".txt", on_click=preventNextTranscription)
         
     st.write('<style>div.block-container{padding-top:1.2rem;}</style>', unsafe_allow_html=True)
     hide_footer_style = """
@@ -127,16 +139,10 @@ def main():
     st.caption("Made with Tensorflow and Streamlit by Andrea Ventura, Dawid Krasowski, Bartlomiej Drewnowski. <a href=https://github.com/haventura/artificial_intelligence_project>GitHub project</a>", unsafe_allow_html=True)
 
 def scaleImage(image, size):
-    if image.width >= image.height:
-        width = size
-        ratio = width / image.width
-        height = int(image.height * ratio)
-        return width, height, ratio
-    else:
-        height = size
-        ratio = height / image.height
-        width = int(image.width * ratio)
-        return width, height, ratio
+    width = size
+    ratio = width / image.width
+    height = int(image.height * ratio)
+    return width, height, ratio
 
 def cropImage(image, crop_data, ratio):
     left = crop_data["left"] * (1/ratio)
