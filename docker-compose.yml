@@ -1,8 +1,6 @@
 version: '3.3'
 
-#services describe the containers that will start
-services: 
-    # backend is the container name for our Go backend
+services:
     frontend:
         # build: "./frontend"
         image: andreaventura/ecam:aitranscript_frontend
