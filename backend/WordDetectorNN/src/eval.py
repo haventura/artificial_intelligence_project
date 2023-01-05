@@ -1,20 +1,14 @@
-import argparse
 from collections import namedtuple
-
 import numpy as np
 import torch
-from path import Path
 
 from .aabb import AABB
 from .aabb_clustering import cluster_aabbs
 from .coding import decode, fg_by_cc
-from .dataloader import DataLoaderIAM
-from .dataset import DatasetIAM, DatasetIAMSplit
 from .iou import compute_dist_mat_2
 from .loss import compute_loss
 from .net import WordDetectorNet
 from .utils import compute_scale_down
-from .visualization import crop_image
 
 EvaluateRes = namedtuple('EvaluateRes', 'batch_imgs,batch_aabbs,loss,metrics')
 
@@ -91,32 +85,3 @@ def evaluate(net, loader, thres=0.5, max_aabbs=None):
             batch_aabbs.append(clustered_aabbs)
 
     return EvaluateRes(batch_imgs, batch_aabbs, loss / len(loader), metrics)
-
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--batch_size', type=int, default=10)
-    parser.add_argument('--data_dir', type=Path, required=True)
-    args = parser.parse_args()
-
-    net = WordDetectorNet()
-    net.load_state_dict(torch.load('./WordDetectorNN/model/weights'))
-    net.eval()
-    net.to('cuda')
-
-    dataset = DatasetIAM(args.data_dir, net.input_size, net.output_size, caching=False)
-    dataset_eval = DatasetIAMSplit(dataset, 0, 10)
-    loader = DataLoaderIAM(dataset_eval, args.batch_size, net.input_size, net.output_size)
-
-    res = evaluate(net, loader, max_aabbs=1000)
-    print(f'Loss: {res.loss}')
-    print(f'Recall: {res.metrics.recall()}')
-    print(f'Precision: {res.metrics.precision()}')
-    print(f'F1 score: {res.metrics.f1()}')
-
-    for img, aabbs in zip(res.batch_imgs, res.batch_aabbs):
-        crop_image(img, aabbs)
-
-
-if __name__ == '__main__':
-    main()

@@ -1,7 +1,6 @@
 import os
 import sys
 from typing import List, Tuple
-
 import numpy as np
 import tensorflow as tf
 
@@ -9,7 +8,6 @@ from .dataloader_iam import Batch
 
 # Disable eager mode
 tf.compat.v1.disable_eager_execution()
-
 
 class DecoderType:
     """CTC decoder types."""
@@ -214,18 +212,6 @@ class Model:
         # map labels to chars for all batch elements
         return [''.join([self.char_list[c] for c in labelStr]) for labelStr in label_strs]
 
-    def train_batch(self, batch: Batch) -> float:
-        """Feed a batch into the NN to train it."""
-        num_batch_elements = len(batch.imgs)
-        max_text_len = batch.imgs[0].shape[0] // 4
-        sparse = self.to_sparse(batch.gt_texts)
-        eval_list = [self.optimizer, self.loss]
-        feed_dict = {self.input_imgs: batch.imgs, self.gt_texts: sparse,
-                     self.seq_len: [max_text_len] * num_batch_elements, self.is_train: True}
-        _, loss_val = self.sess.run(eval_list, feed_dict)
-        self.batches_trained += 1
-        return loss_val
-
     @staticmethod
     def dump_nn_output(rnn_output: np.ndarray) -> None:
         """Dump the output of the NN to CSV file(s)."""
@@ -299,8 +285,3 @@ class Model:
             self.dump_nn_output(eval_res[1])
 
         return texts, probs
-
-    def save(self) -> None:
-        """Save model to file."""
-        self.snap_ID += 1
-        self.saver.save(self.sess, './SimpleHTR/model/snapshot', global_step=self.snap_ID)

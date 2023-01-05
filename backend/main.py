@@ -1,6 +1,5 @@
-from typing import Union
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File
 import time
 from SimpleHTR.src.inference import infer
 from SimpleHTR.src.model import Model
