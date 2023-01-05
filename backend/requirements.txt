@@ -1,0 +1,12 @@
+-f https://download.pytorch.org/whl/torch_stable.html
+torch==1.11.0+cpu
+torchvision==0.12.0+cpu
+tensorflow-cpu
+numpy==1.22.3
+opencv-python-headless
+path==15.0.0
+dataclasses
+scikit-learn
+uvicorn
+fastapi
+python-multipart

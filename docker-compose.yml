@@ -1,0 +1,21 @@
+version: '3.3'
+
+services:
+    frontend:
+        # build: "./frontend"
+        image: andreaventura/ecam:aitranscript_frontend
+        ports:
+            - "8501:8501"
+        restart: "always"
+        networks: 
+            - "aitranscript.network"
+    backend:
+        # build: "./backend"
+        image: andreaventura/ecam:aitranscript_backend
+        ports:
+            - "8000:8000"
+        restart: "always"
+        networks: 
+            - "aitranscript.network"
+networks: 
+    aitranscript.network:

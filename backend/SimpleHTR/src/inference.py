@@ -1,4 +1,3 @@
-import argparse
 from typing import Tuple
 import cv2
 from path import Path

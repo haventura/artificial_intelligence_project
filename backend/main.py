@@ -1,14 +1,11 @@
-from typing import Union
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File
 import time
-import json
 from SimpleHTR.src.inference import infer
 from SimpleHTR.src.model import Model
 from WordDetectorNN.src.infer import word_extractor
 import dataclasses
 import os
-import scipy.spatial.distance as distance
 
 class FilePaths:
     """Filenames and paths to data."""
@@ -60,7 +57,8 @@ async def create_file(file: bytes = File()):
     word_extractor(f"data/{timestamp}", f"data/{timestamp}/sub_images")
     
     text = ""
-    for filename in os.listdir(sub_images_folder_path):
+    for i in range(1,len(os.listdir(sub_images_folder_path))+1):
+        filename = f"file{i:03d}.png"
         print(filename)
         recognized, probability = infer(model, f'{sub_images_folder_path}/{filename}')
         text += (recognized + " ")

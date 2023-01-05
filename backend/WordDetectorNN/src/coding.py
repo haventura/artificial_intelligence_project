@@ -15,35 +15,6 @@ class MapOrdering:
     GEO_RIGHT = 6
     NUM_MAPS = 7
 
-
-def encode(shape, gt, f=1.0):
-    gt_map = np.zeros((MapOrdering.NUM_MAPS,) + shape)
-    for aabb in gt:
-        aabb = aabb.scale(f, f)
-
-        # segmentation map
-        aabb_clip = AABB(0, shape[0] - 1, 0, shape[1] - 1)
-
-        aabb_word = aabb.scale_around_center(0.5, 0.5).as_type(int).clip(aabb_clip)
-        aabb_sur = aabb.as_type(int).clip(aabb_clip)
-        gt_map[MapOrdering.SEG_SURROUNDING, aabb_sur.ymin:aabb_sur.ymax + 1, aabb_sur.xmin:aabb_sur.xmax + 1] = 1
-        gt_map[MapOrdering.SEG_SURROUNDING, aabb_word.ymin:aabb_word.ymax + 1, aabb_word.xmin:aabb_word.xmax + 1] = 0
-        gt_map[MapOrdering.SEG_WORD, aabb_word.ymin:aabb_word.ymax + 1, aabb_word.xmin:aabb_word.xmax + 1] = 1
-
-        # geometry map TODO vectorize
-        for x in range(aabb_word.xmin, aabb_word.xmax + 1):
-            for y in range(aabb_word.ymin, aabb_word.ymax + 1):
-                gt_map[MapOrdering.GEO_TOP, y, x] = y - aabb.ymin
-                gt_map[MapOrdering.GEO_BOTTOM, y, x] = aabb.ymax - y
-                gt_map[MapOrdering.GEO_LEFT, y, x] = x - aabb.xmin
-                gt_map[MapOrdering.GEO_RIGHT, y, x] = aabb.xmax - x
-
-    gt_map[MapOrdering.SEG_BACKGROUND] = np.clip(1 - gt_map[MapOrdering.SEG_WORD] - gt_map[MapOrdering.SEG_SURROUNDING],
-                                                 0, 1)
-
-    return gt_map
-
-
 def subsample(idx, max_num):
     """restrict fg indices to a maximum number"""
     f = len(idx[0]) / max_num
@@ -97,28 +68,3 @@ def decode(pred_map, comp_fg=fg_by_threshold(0.5), f=1):
         aabb = AABB(xc - l, xc + r, yc - t, yc + b)
         aabbs.append(aabb.scale(f, f))
     return aabbs
-
-
-def main():
-    import matplotlib.pyplot as plt
-    aabbs_in = [AABB(10, 30, 30, 60)]
-    encoded = encode((50, 50), aabbs_in, f=0.5)
-    aabbs_out = decode(encoded, f=2)
-    print(aabbs_out[0])
-    plt.subplot(151)
-    plt.imshow(encoded[MapOrdering.SEG_WORD:MapOrdering.SEG_BACKGROUND + 1].transpose(1, 2, 0))
-
-    plt.subplot(152)
-    plt.imshow(encoded[MapOrdering.GEO_TOP])
-    plt.subplot(153)
-    plt.imshow(encoded[MapOrdering.GEO_BOTTOM])
-    plt.subplot(154)
-    plt.imshow(encoded[MapOrdering.GEO_LEFT])
-    plt.subplot(155)
-    plt.imshow(encoded[MapOrdering.GEO_RIGHT])
-
-    plt.show()
-
-
-if __name__ == '__main__':
-    main()
