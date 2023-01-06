@@ -65,29 +65,24 @@ def main():
         uploaded_file = st.file_uploader("Drop a file containing handwritten text here:",type=["png", "jpg", "pdf"], accept_multiple_files=False)
         if uploaded_file is None:
             st.session_state["image_width"] = st.slider("Image Width", 500, 1000, 500, 100)
-        # st.subheader("📖 History")
-        # if st.session_state["history"] == []:
-        #     st.caption("Your transcripts history will appear here.")
-        #     raise fragile.Break
-        # for entry in st.session_state["history"]:
-        #     st.button(entry.name, on_click=selectFileFromHistory, args=(entry))
 
     with fragile(col1):
         if uploaded_file is None:
             st.caption("Once uploaded, your file will appear here. Draw boxes on it to transcribe their content.")
             raise fragile.Break
+        
+        uploaded_file_bytes = uploaded_file.read()
+        if magic.from_buffer(uploaded_file_bytes, mime=True) == 'application/pdf':
+            background_image = pdf2image.convert_from_bytes(uploaded_file_bytes)[0]
+        else:
+            background_image = Image.open(uploaded_file) 
         if uploaded_file != st.session_state["previous_upload"]:
             st.session_state["color_index"] = 0
             if st.session_state["previous_upload"] != None:
                 preventNextTranscription()
             st.session_state["transcript"] = []
             st.session_state["previous_upload"] = uploaded_file
-            st.session_state["history"].append(HistoryEntry(name=uploaded_file.name.split(".")[0])) 
-        uploaded_file_bytes = uploaded_file.read()
-        if magic.from_buffer(uploaded_file_bytes, mime=True) == 'application/pdf':
-            background_image = pdf2image.convert_from_bytes(uploaded_file_bytes)[0]
-        else:
-            background_image = Image.open(uploaded_file) 
+            st.session_state["history"].append(HistoryEntry(uploaded_file.name.split(".")[0], background_image)) 
         width, height, ratio = scaleImage(background_image,st.session_state["image_width"])
         canvas_result = st_canvas(
             fill_color = "rgba(0, 0, 0, 0.0)",
@@ -115,10 +110,7 @@ def main():
             cropped_image = cropImage(background_image, crop_data, ratio)
             transcript = transcribeImage(cropped_image)
             st.session_state["transcript"].append((COLORS[st.session_state["color_index"]-1], transcript))
-            st.session_state["history"][-1].transcripts.append(transcript)
-            if canvas_result.image_data is not None:
-                image_data = canvas_result.image_data
-                st.session_state["history"][-1].image = Image.fromarray(image_data.astype("uint8"), mode="RGBA")          
+            st.session_state["history"][-1].transcripts.append(transcript)         
         st.session_state["color_index"] += 1
         if(st.session_state["color_index"] >= len(COLORS)):
             st.session_state["color_index"] = 0
@@ -127,6 +119,18 @@ def main():
             st.write('<p style="color:' + value[0] + ';">' + value[1] + '</p>', unsafe_allow_html=True)    
             output_data += (value[1] + "\n") 
         st.download_button("Download", data=codecs.encode(output_data), file_name=st.session_state["history"][-1].name + ".txt", on_click=preventNextTranscription)
+
+    with fragile(st.sidebar):
+        st.subheader("📖 History")
+        if st.session_state["history"] == []:
+            st.caption("Your transcripts history will appear here.")
+            raise fragile.Break
+        for entry in st.session_state["history"]:
+            history_width, history_height, _ = scaleImage(entry.image,100)
+            st.write(entry.name)
+            st.image(entry.image,width = history_width)
+            for text in entry.transcripts:
+                st.caption(text)
         
     st.write('<style>div.block-container{padding-top:1.2rem;}</style>', unsafe_allow_html=True)
     hide_footer_style = """
