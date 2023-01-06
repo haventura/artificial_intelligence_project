@@ -31,10 +31,16 @@ class HistoryEntry:
     transcripts: list[str] = dataclasses.field(default_factory=list)
 
 def main():
-    st.set_page_config(page_title="Text Recognition", page_icon="🤖", layout="wide")
+    st.set_page_config(page_title="Handwritten Text Recognition", page_icon="✏️", layout="wide")
+    css = """ 
+        div.block-container{padding-top:1.2rem;}
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        """
+    st.markdown(f'<style>{css}</style>', unsafe_allow_html=True) # To hide file uploader content widget.
     st.title("✒️ Handwritten Text Recognition")
 
-    col1, col2 = st.columns([2,1])
+    col1, col2 = st.columns([2,1.5])
     COLORS = [
         "#53bfc5",
         "#2b58b1",
@@ -56,15 +62,10 @@ def main():
         st.session_state["prevent_transcript"] = False
     if "previous_upload" not in st.session_state:
         st.session_state["previous_upload"] = None
-    if "image_width" not in st.session_state:
-        st.session_state["image_width"] = 500
 
     with fragile(st.sidebar):
-        st.header("📜 Input File")
-        
+        st.title("📜 Input File") 
         uploaded_file = st.file_uploader("Drop a file containing handwritten text here:",type=["png", "jpg", "pdf"], accept_multiple_files=False)
-        if uploaded_file is None:
-            st.session_state["image_width"] = st.slider("Image Width", 500, 1000, 500, 100)
 
     with fragile(col1):
         if uploaded_file is None:
@@ -78,12 +79,12 @@ def main():
             background_image = Image.open(uploaded_file) 
         if uploaded_file != st.session_state["previous_upload"]:
             st.session_state["color_index"] = 0
-            if st.session_state["previous_upload"] != None:
+            if st.session_state["previous_upload"] != None and len(st.session_state["history"][-1].transcripts) > 0 :
                 preventNextTranscription()
             st.session_state["transcript"] = []
             st.session_state["previous_upload"] = uploaded_file
             st.session_state["history"].append(HistoryEntry(uploaded_file.name.split(".")[0], background_image)) 
-        width, height, ratio = scaleImage(background_image,st.session_state["image_width"])
+        width, height, ratio = scaleImage(background_image,700)
         canvas_result = st_canvas(
             fill_color = "rgba(0, 0, 0, 0.0)",
             stroke_color = COLORS[st.session_state["color_index"]],
@@ -121,7 +122,7 @@ def main():
         st.download_button("Download", data=codecs.encode(output_data), file_name=st.session_state["history"][-1].name + ".txt", on_click=preventNextTranscription)
 
     with fragile(st.sidebar):
-        st.subheader("📖 History")
+        st.title("📖 History")
         if st.session_state["history"] == []:
             st.caption("Your transcripts history will appear here.")
             raise fragile.Break
@@ -132,14 +133,6 @@ def main():
             for text in entry.transcripts:
                 st.caption(text)
         
-    st.write('<style>div.block-container{padding-top:1.2rem;}</style>', unsafe_allow_html=True)
-    hide_footer_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            </style>
-            """
-    st.markdown(hide_footer_style, unsafe_allow_html=True) 
     st.caption("Made with Tensorflow and Streamlit by Andrea Ventura, Dawid Krasowski, Bartlomiej Drewnowski. <a href=https://github.com/haventura/artificial_intelligence_project>GitHub project</a>", unsafe_allow_html=True)
 
 def scaleImage(image, size):
@@ -164,10 +157,6 @@ def transcribeImage(image):
 
 def preventNextTranscription():
     st.session_state["prevent_transcript"]=True
-
-
-#def selectFileFromHistory(entry: HistoryEntry):
-
 
 if __name__ == '__main__':
     main()

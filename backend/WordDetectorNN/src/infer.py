@@ -18,6 +18,8 @@ def word_extractor( src, dest, device = 'cpu' ):
     res = evaluate(net, loader, max_aabbs=1000)
 
     for i, (img, aabbs) in enumerate(zip(res.batch_imgs, res.batch_aabbs)):
+        if len(aabbs) == 0:
+            continue
         f = loader.get_scale_factor(i)
         aabbs = order_aabbs(aabbs)
         aabbs = [aabb.scale(1 / f, 1 / f) for aabb in aabbs]
