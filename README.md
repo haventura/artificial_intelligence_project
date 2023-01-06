@@ -2,6 +2,8 @@
 
 A short resume of the project
 
+![Streamlit frontend](/images/streamlit_app.png)
+
 ## Installation
 
 ### With Docker
@@ -38,7 +40,24 @@ The transcription of an input image, selected as a rectangle by the user, is don
 
 Since the app is used only for inferance, and in order to reduce the backend image size, gpu support is not enabled; all inferance tasks are computed using the cpu.
 
-## Information about model
+### Word extraction from input image
+
+
+A detailled description of the model can be found [here](https://githubharald.github.io/word_detector.html)
+
+The model is trained on the IAM dataset
+
+### Word transcription
+
+The model used is a stripped down version of the model described by Harald Scheidl in his [Visual Computing Diploma thesis](https://repositum.tuwien.at/handle/20.500.12708/5409), called "SimpleHTR". Made using a neural network, this model consist of 5 convolutional NN layers, 2 recurrent NN layers using the popular Long Short-Term Memory implementation, and a a final Connectionist Temporal Classification (CTC) loss and decoding layer. 
+
+This model is also trained on the IAM dataset, it takes as input an image of a single word of any size, resize it to fit the input RNN layer (adding blank space if necessary) and output the transcribed word as text.
+
+The stripped down model is described in great details in this [Medium article](https://towardsdatascience.com/build-a-handwritten-text-recognition-system-using-tensorflow-2326a3487cd5).
+
+### Reordering a multiline transcript
+
+Each sub-image, containing a single word, that is extracted from the main image is associated with its coordinates within that image. Reordering the output words is done in two steps: First, the words are ordered based on their y coordinates, their vertical position on the original image. This ordered list is then clustered to group words in lines isolated from one another. Afterward, within each line, each words are ordered from left to right according to their x coordinate in the image. The lines are then concatenated and the result is an ordered text, from left to right and top to bottom.
 
 ## References
 
@@ -48,3 +67,4 @@ Since the app is used only for inferance, and in order to reduce the backend ima
 * [Streamlit Drawable Canvas.](https://github.com/andfanilo/streamlit-drawable-canvas)
 * [TensorFlow - Create production-grade machine learning models.](https://www.tensorflow.org/)
 * [PyTorch - An open source machine learning framework.](https://pytorch.org/)
+* [IAM Handwriting Database](https://fki.tic.heia-fr.ch/databases/iam-handwriting-database)
