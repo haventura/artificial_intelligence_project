@@ -1,6 +1,6 @@
 # Artificial Intelligence project
 
-A short resume of the project
+Handwritten Text Recognition application implemented with PyTorch and TensorFlow, trained on the IAM dataset. The application takes a pdf, png or jpg file as input and output the recognized text within that image of any area selected by the user.
 
 ![Streamlit frontend](/images/streamlit_app.png)
 
@@ -58,6 +58,14 @@ The stripped down model is described in great details in this [Medium article](h
 ### Reordering a multiline transcript
 
 Each sub-image, containing a single word, that is extracted from the main image is associated with its coordinates within that image. Reordering the output words is done in two steps: First, the words are ordered based on their y coordinates, their vertical position on the original image. This ordered list is then clustered to group words in lines isolated from one another. Afterward, within each line, each words are ordered from left to right according to their x coordinate in the image. The lines are then concatenated and the result is an ordered text, from left to right and top to bottom.
+
+## Performances and Limitations
+
+Since the transcription model is trained on the IAM dataset which is in english, its performance are reduced on non-english language.
+
+In order to work effectively, the word extractor model requires the sample images to have relatively large inter-word-distances and small intra-word-distances, like IAM.
+
+An improvement on our application would be to add a decoder at the output of the transcritption model that would constrain words to those contained in a given dictionnary. An example of such a decoder can be found [here](https://github.com/githubharald/CTCWordBeamSearch).
 
 ## References
 
