@@ -8,8 +8,7 @@ A short resume of the project
 
 ### With Docker
 
-1. Make sure the docker-compose.yml file in the root of the project has the `build:` directives uncommented and the `images:` directives commented for both the frontend and backend services.
-1. From the same root, run `docker compose up`. This command will start building the images for the frontend and backend services. After building them, it will also create the related containers and start them.
+1. From the root folder, run `docker compose up`. This command will start building the images for the frontend and backend services. After building them, it will also create the related containers and start them.
 1.  Once started, the streamlit application will be available at the following address: http://localhost:8501.
 
 ### Without Docker
@@ -31,6 +30,8 @@ The application also feature a History tab, acessible from the sidebar, from whi
 
 ## Architecture
 
+![Steps](/images/steps.png)
+
 The frontend application was created using the [Streamlit](https://streamlit.io/) framework, with a custom [drawable canvas](https://github.com/andfanilo/streamlit-drawable-canvas) component.
 
 The transcription of an input image, selected as a rectangle by the user, is done in two steps:
@@ -42,10 +43,9 @@ Since the app is used only for inferance, and in order to reduce the backend ima
 
 ### Word extraction from input image
 
+The model used was developped by Harald Scheidl and is trained on the IAM dataset. It generates rectangular bounding boxes containing words from the original image. The coordinate of these bounding boxes are then used to extract those words into sub-images that are then fed one by one to the word transcription model.
 
-A detailled description of the model can be found [here](https://githubharald.github.io/word_detector.html)
-
-The model is trained on the IAM dataset
+A detailled description of the model can be found [here](https://githubharald.github.io/word_detector.html).
 
 ### Word transcription
 
