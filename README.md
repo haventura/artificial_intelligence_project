@@ -8,8 +8,8 @@ Handwritten Text Recognition application implemented with PyTorch and TensorFlow
 
 ### With Docker
 
-1. From the root folder, run `docker compose up`. This command will start building the images for the frontend and backend services. After building them, it will also create the related containers and start them.
-1.  Once started, the streamlit application will be available at the following address: http://localhost:8501.
+1. From the root folder, run `docker compose build`, followed by `docker compose up`. These commands will start building the images for the frontend and backend services and will also create the related containers and start them.
+1.  Once started, the frontend application will be available at the following address: http://localhost:8501.
 
 ### Without Docker
 
@@ -22,11 +22,11 @@ Handwritten Text Recognition application implemented with PyTorch and TensorFlow
 
 The first step in using our app is to upload a `png`, `jpg` or `pdf` file to the file uploader located on the sidebar of the application (for `pdf`, only the first page will be rendered). After uploading a file, it will be rendered on your screen and you'll be able to freely draw rectangles encasing words, lines and paragraphs of text, or the whole file.
 
-After ecompasing text within a rectangle, the Streamlit app sends a request to the backend service that transcribe the content of that rectangles and returns the formatted text. That text is displayed on the right-hand side of the aplication and is colored according to the color of the rectangle used to select that text. Several transcriptions can be made on the same image by drawing multiple rectangles; each results will be added under the previous ones.
+After ecompasing text within a rectangle, the Streamlit app sends a request to the backend service that transcribe the content of that rectangles and returns the formatted text. That text is displayed on the right-hand side of the application and is colored according to the color of the rectangle used to select that text. Several transcriptions can be made on the same image by drawing multiple rectangles; each results will be added under the previous ones.
 
 After transcribing the desired text, a Download button enables the user to export the formatted text and download it as a text file, with each line in the file beeing the output of one transcription. The user can then upload another file and start a new transcription.
 
-The application also feature a History tab, acessible from the sidebar, from which the user can see previously transcribed files and their formatted textual content.
+The application also feature a History tab, accessible from the sidebar, from which the user can see previously transcribed files and their formatted textual content.
 
 ## Architecture
 
@@ -43,7 +43,7 @@ Since the app is used only for inferance, and in order to reduce the backend ima
 
 ### Word extraction from input image
 
-The model used was developped by Harald Scheidl and is trained on the IAM dataset. It generates rectangular bounding boxes containing words from the original image. The coordinate of these bounding boxes are then used to extract those words into sub-images that are then fed one by one to the word transcription model.
+The model used was developped by Harald Scheidl and is trained on the [IAM dataset](https://fki.tic.heia-fr.ch/databases/iam-handwriting-database). It generates rectangular bounding boxes containing words from the original image. The coordinate of these bounding boxes are then used to extract those words into sub-images that are then fed one by one to the word transcription model.
 
 A detailled description of the model can be found [here](https://githubharald.github.io/word_detector.html).
 
